@@ -2,11 +2,18 @@ package bank;
 
 import java.util.Scanner;
 
+/**
+ * Main class for ATM Console Application.
+ * Provides menu for creating accounts, login, and performing transactions.
+ */
 public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
         BankSystem bank = new BankSystem();
+
+        // Load accounts from file at startup
+        bank.loadAccountsFromFile();
 
         while (true) {
             System.out.println("\n--- ATM MENU ---");
@@ -24,36 +31,39 @@ public class Main {
 
                 case 2:
                     Account acc = bank.login();
-
                     if (acc != null) {
+                        // Logged-in session menu
                         while (true) {
-                            System.out.println("\n1. Deposit");
+                            System.out.println("\n--- Account Menu ---");
+                            System.out.println("1. Deposit");
                             System.out.println("2. Withdraw");
                             System.out.println("3. Check Balance");
                             System.out.println("4. Logout");
-                            System.out.print("Choose: ");
+                            System.out.print("Choose option: ");
                             int opt = sc.nextInt();
 
-                            if (opt == 1)
-                                bank.deposit(acc);
-                            else if (opt == 2)
-                                bank.withdraw(acc);
-                            else if (opt == 3)
-                                bank.checkBalance(acc);
-                            else if (opt == 4)
-                                break;
-                            else
-                                System.out.println("Invalid");
+                            switch (opt) {
+                                case 1 -> bank.deposit(acc);
+                                case 2 -> bank.withdraw(acc);
+                                case 3 -> bank.checkBalance(acc);
+                                case 4 -> {
+                                    System.out.println("Logged out successfully.");
+                                    break;
+                                }
+                                default -> System.out.println("Invalid choice! Try again.");
+                            }
+
+                            if (opt == 4) break; // exit account menu
                         }
                     }
                     break;
 
                 case 3:
-                    System.out.println("Thank you!");
+                    System.out.println("Thank you for using our ATM. Goodbye!");
                     System.exit(0);
 
                 default:
-                    System.out.println("Invalid choice");
+                    System.out.println("Invalid choice! Please enter 1, 2, or 3.");
             }
         }
     }
